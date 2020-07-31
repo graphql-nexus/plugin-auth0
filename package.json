@@ -1,9 +1,9 @@
 {
-  "name": "project-lib-typescript",
-  "version": "0.0.0",
+  "name": "nexus-plugin-auth0",
+  "version": "0.0.0-dripip",
   "main": "dist/index.js",
-  "repository": "git@github.com:prisma-labs/project-lib-typescript.git",
-  "author": "Prisma Labs Team",
+  "repository": "git@github.com:graphql-nexus/plugin-auth0.git",
+  "author": "Prisma",
   "license": "MIT",
   "files": [
     "dist"
@@ -11,7 +11,9 @@
   "scripts": {
     "format": "prettier --write .",
     "dev": "tsc --build --watch",
-    "build": "tsc",
+    "build:doc": "doctoc README.md --notitle",
+    "build:ts": "tsc",
+    "build": "yarn -s build:ts && yarn -s build:doc",
     "test": "jest",
     "clean": "rm -rf dist",
     "release:stable": "dripip stable",
@@ -22,9 +24,11 @@
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
     "@types/jest": "26.0.8",
+    "doctoc": "^1.4.0",
     "dripip": "0.9.0",
     "jest": "26.2.2",
     "jest-watch-typeahead": "0.6.0",
+    "nexus": "^0.26.0-next.14",
     "prettier": "2.0.5",
     "ts-jest": "26.1.4",
     "typescript": "3.9.7"
