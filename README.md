@@ -1,4 +1,4 @@
-# nexus-plugin-auth0 <!-- omit in toc -->
+# (WIP) nexus-plugin-auth0 <!-- omit in toc -->
 
 **Contents**
 
@@ -9,6 +9,7 @@
 <br>
 
 ## Installation
+
 
 ```
 npm install nexus-plugin-auth0

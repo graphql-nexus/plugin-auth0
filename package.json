@@ -1,7 +1,9 @@
 {
   "name": "nexus-plugin-auth0",
-  "version": "0.0.0-dripip",
+  "version": "0.0.0",
   "main": "dist/index.js",
+  "module": "dist/nexus-plugin-auth0.esm.js",
+  "description": "A Nexus framework plugin",
   "repository": "git@github.com:graphql-nexus/plugin-auth0.git",
   "author": "Prisma",
   "license": "MIT",
@@ -16,13 +18,25 @@
     "build": "yarn -s build:ts && yarn -s build:doc",
     "test": "jest",
     "clean": "rm -rf dist",
-    "release:stable": "dripip stable",
-    "release:preview": "dripip preview",
-    "release:pr": "dripip pr",
+    "publish:stable": "dripip stable",
+    "publish:preview": "dripip preview",
+    "publish:pr": "dripip pr",
     "prepublishOnly": "yarn -s build"
+  },
+  "prettier": "@prisma-labs/prettier-config",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ]
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
+    "@types/async": "^3.2.3",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/node": "^14.0.27",
     "@types/jest": "26.0.8",
     "doctoc": "^1.4.0",
     "dripip": "0.9.0",
@@ -33,13 +47,8 @@
     "ts-jest": "26.1.4",
     "typescript": "3.9.7"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ]
-  },
-  "prettier": "@prisma-labs/prettier-config"
+  "dependencies": {
+    "async": "^3.2.0",
+    "jwks-rsa": "^1.8.1"
+  }
 }
