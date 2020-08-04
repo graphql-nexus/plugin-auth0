@@ -1,12 +1,10 @@
 import { RuntimePlugin } from 'nexus/plugin'
 import { verify, decode } from 'jsonwebtoken'
 import { Settings } from './settings'
-import { Auth0Plugin } from './lib/schema'
-import jwksClient, { SigningKey, CertSigningKey } from 'jwks-rsa'
+import { Auth0Plugin } from './schema'
+import jwksClient from 'jwks-rsa'
 
-export const plugin: RuntimePlugin<Settings, 'required'> = (
-  settings: Settings
-) => (project: any) => {
+export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) => (project: any) => {
   var plugins = []
   const protectedPaths = settings.protectedPaths
   if (protectedPaths) {
@@ -16,22 +14,15 @@ export const plugin: RuntimePlugin<Settings, 'required'> = (
   return {
     context: {
       create: async (req: any) => {
-        if (
-          req.headers.authorization &&
-          req.headers.authorization.split(' ')[0] === 'Bearer'
-        ) {
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
           const token = req.headers.authorization.split(' ')[1]
-          return verifyToken(
-            token,
-            settings.auth0Domain,
-            settings.auth0Audience
-          )
+          return await verifyToken(token, settings.auth0Domain, settings.auth0Audience)
         }
-
         return {
           token: null,
         }
       },
+
       typeGen: {
         fields: {
           token: 'string | null',
@@ -56,44 +47,36 @@ const verifyToken = async (
   token: string,
   auth0Domain: string,
   auth0Audience: string
-) => {
+): Promise<{ token: string | null }> => {
   try {
     const client = jwksClient({
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
+      strictSsl: true,
       jwksUri: `https://${auth0Domain}/.well-known/jwks.json`,
     })
+    // console.log('token', token)
     const secret = await getSecret(client, token)
-    // TODO Remove
-    console.log(`Secret: ${secret} `)
 
     if (secret) {
-      const verifiedToken = verify(token, secret, { audience: auth0Audience })
-      return {
-        token: verifiedToken,
-      }
+      const decodedToken = verify(token, secret, { audience: auth0Audience })
+      return { token: token }
     } else {
-      return {
-        token: null,
-      }
+      return { token: null }
     }
   } catch (err) {
+    console.log(err)
     return {
       token: null,
     }
   }
 }
 
-function getSecret(
-  client: jwksClient.JwksClient,
-  token: string
-): Promise<string | null> {
+function getSecret(client: jwksClient.JwksClient, token: string): Promise<string | null> {
   return new Promise(function (resolve, reject) {
-    const decodedToken = decode(token)
-    const header =
-      decodedToken && typeof decodedToken === 'object' && decodedToken['header']
-    console.log(decodedToken)
+    const decodedToken = decode(token, { complete: true })
+    const header = decodedToken && typeof decodedToken === 'object' && decodedToken['header']
     if (!header || header.alg !== 'RS256') {
       reject(new Error('No Header or Incorrect Header Alg, Only RS256 Allowed'))
     }

@@ -4,12 +4,16 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Installation](#installation)
+- [Example Usage](#example-usage)
+- [Runtime Contributions](#runtime-contributions)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 <br>
 
 ## Installation
-
 
 ```
 npm install nexus-plugin-auth0
@@ -19,20 +23,18 @@ npm install nexus-plugin-auth0
 
 ## Example Usage
 
-TODO
-
-<br>
-
-## Worktime Contributions
-
-TODO
+```ts
+use(
+  auth({
+    auth0Audience: 'nexus-plugin-auth0',
+    auth0Domain: 'graphql-nexus.eu.auth0.com',
+    protectedPaths: ['Query.properties'],
+  })
+)
+```
 
 <br>
 
 ## Runtime Contributions
-
-TODO
-
-## Testtime Contributions
 
 TODO
