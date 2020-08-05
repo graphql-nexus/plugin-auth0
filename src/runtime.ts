@@ -1,10 +1,20 @@
-import { RuntimePlugin } from 'nexus/plugin'
+import { RuntimePlugin, RuntimeLens } from 'nexus/plugin'
 import { verify, decode } from 'jsonwebtoken'
 import { Settings } from './settings'
 import { Auth0Plugin } from './schema'
 import jwksClient from 'jwks-rsa'
 
-export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) => (project: any) => {
+export type DecodedAccessToken = {
+  iss: string,
+  sub: string,
+  aud: string[],
+  iat: number,
+  exp: number,
+  azp: string,
+  scope: string
+}
+
+export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) => (project) => {
   var plugins = []
   const protectedPaths = settings.protectedPaths
   if (protectedPaths) {
@@ -16,7 +26,7 @@ export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) 
       create: async (req: any) => {
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
           const token = req.headers.authorization.split(' ')[1]
-          return await verifyToken(token, settings.auth0Domain, settings.auth0Audience)
+          return await verifyToken(project, token, settings)
         }
         return {
           token: null,
@@ -25,8 +35,16 @@ export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) 
 
       typeGen: {
         fields: {
-          token: 'string | null',
-        },
+          token: `{
+            iss: string,
+            sub: string,
+            aud: string[],
+            iat: number,
+            exp: number,
+            azp: string,
+            scope: string
+          } | null`,
+        }
       },
     },
     schema: {
@@ -44,29 +62,29 @@ export const plugin: RuntimePlugin<Settings, 'required'> = (settings: Settings) 
  *
  */
 const verifyToken = async (
+  project: RuntimeLens,
   token: string,
-  auth0Domain: string,
-  auth0Audience: string
-): Promise<{ token: string | null }> => {
+  settings: Settings
+): Promise<{ token: DecodedAccessToken | null }> => {
   try {
     const client = jwksClient({
       cache: true,
       rateLimit: true,
       jwksRequestsPerMinute: 5,
       strictSsl: true,
-      jwksUri: `https://${auth0Domain}/.well-known/jwks.json`,
+      jwksUri: `https://${settings.auth0Domain}/.well-known/jwks.json`,
     })
-    // console.log('token', token)
     const secret = await getSecret(client, token)
 
     if (secret) {
-      const decodedToken = verify(token, secret, { audience: auth0Audience })
-      return { token: token }
+      const decodedToken = verify(token, secret, { audience: settings.auth0Audience })
+      settings.debug && project.log.info(JSON.stringify(decodedToken))
+      return { token: decodedToken as DecodedAccessToken }
     } else {
       return { token: null }
     }
   } catch (err) {
-    console.log(err)
+    project.log.error(err)
     return {
       token: null,
     }
