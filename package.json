@@ -1,6 +1,6 @@
 {
   "name": "nexus-plugin-auth0",
-  "version": "0.0.0",
+  "version": "0.0.0-dripip",
   "main": "dist/index.js",
   "module": "dist/nexus-plugin-auth0.esm.js",
   "description": "A Nexus framework plugin",
