@@ -28,9 +28,19 @@ use(
   auth({
     auth0Audience: 'nexus-plugin-auth0',
     auth0Domain: 'graphql-nexus.eu.auth0.com',
-    protectedPaths: ['Query.properties'],
+    protectedPaths: ['Query.posts'],
   })
 )
+```
+### Settings
+```ts
+type Settings = {
+  auth0Domain: string
+  auth0Audience: string
+  protectedPaths?: string[]
+  debug?: boolean
+}
+
 ```
 
 <br>
