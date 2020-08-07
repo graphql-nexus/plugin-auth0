@@ -85,9 +85,7 @@ const verifyToken = async (
     }
   } catch (err) {
     project.log.error(err)
-    return {
-      token: null,
-    }
+    throw err
   }
 }
 
