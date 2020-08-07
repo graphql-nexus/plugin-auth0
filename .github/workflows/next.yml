@@ -1,8 +1,8 @@
-name: trunk
+name: next
 
 on:
   push:
-    branches: [master]
+    branches: [next]
 
 jobs:
   test:
