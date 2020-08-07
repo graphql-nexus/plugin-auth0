@@ -1,5 +1,6 @@
 # nexus-plugin-auth0 <!-- omit in toc -->
-[![npm version](https://badge.fury.io/js/nexus-plugin-auth0.svg)](https://badge.fury.io/js/nexus-plugin-auth0)
+![npm](https://img.shields.io/npm/v/nexus-plugin-auth0?style=flat-square)
+![npm (tag)](https://img.shields.io/npm/v/nexus-plugin-auth0/next?style=flat-square)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 
