@@ -48,6 +48,6 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "jwks-rsa": "^1.8.1"
+    "jwks-rsa": "^2.0.0"
   }
 }
